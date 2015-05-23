@@ -11,6 +11,7 @@ import org.vertx.java.core.net.NetServer;
 import org.vertx.java.core.net.NetSocket;
 import org.vertx.java.platform.Verticle;
 
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -24,6 +25,8 @@ public class Output extends Verticle {
     private JsonObject result = new JsonObject();
     private String source;
     private long time;
+    private String uuid;
+
     @Override
     public void start(){
         bus = vertx.eventBus();
@@ -32,11 +35,21 @@ public class Output extends Verticle {
             @Override
             public void handle(Message<JsonObject> message) {
                 log.info("finish");
+                uuid = message.body().getString("#ID#");
+                container.logger().trace("receiveResult:" + uuid);
                 source = message.body().getString("#SOURCE#");
                 time = Long.valueOf(message.body().getString("#TIME#"));
+                message.body().removeField("#ID#");
                 message.body().removeField("#SOURCE#");
                 message.body().removeField("#TIME#");
                 addToResult(message.body());
+                container.logger().trace("jobDone:" + uuid);
+                try{
+                    PrintWriter out = new PrintWriter("src/main/result/filename.txt");
+                    out.print(result.toString());
+                } catch (Exception e){
+                    log.error("File not successful created");
+                }
             }
         });
     }
@@ -44,7 +57,6 @@ public class Output extends Verticle {
         Iterator it = message.toMap().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
-            Object o = result.getInteger((String) pair.getKey());
             if(result.getInteger((String) pair.getKey()) != null){
                 result.putNumber((String) pair.getKey(), result.getInteger((String) pair.getKey()) + (Integer) pair.getValue());
             } else {
