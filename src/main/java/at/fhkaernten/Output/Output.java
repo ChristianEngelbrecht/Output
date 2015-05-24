@@ -36,20 +36,21 @@ public class Output extends Verticle {
             public void handle(Message<JsonObject> message) {
                 log.info("finish");
                 uuid = message.body().getString("#ID#");
-                container.logger().trace("receiveResult:" + uuid);
+                log.trace("receiveResult:" + uuid);
                 source = message.body().getString("#SOURCE#");
                 time = Long.valueOf(message.body().getString("#TIME#"));
                 message.body().removeField("#ID#");
                 message.body().removeField("#SOURCE#");
                 message.body().removeField("#TIME#");
                 addToResult(message.body());
-                container.logger().trace("jobDone:" + uuid);
-                try{
+                log.info(result);
+                log.trace("jobDone:" + uuid);
+                /**try{
                     PrintWriter out = new PrintWriter("src/main/result/filename.txt");
                     out.print(result.toString());
                 } catch (Exception e){
                     log.error("File not successful created");
-                }
+                }**/
             }
         });
     }

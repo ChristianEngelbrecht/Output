@@ -37,7 +37,7 @@ public class ReceiveReduce extends Verticle {
                 }));
 
             }
-        }).listen(container.config().getInteger("Port"), container.config().getString("IP"));
+        }).listen(container.config().getInteger("port"), container.config().getString("IP"));
     }
 
 }
