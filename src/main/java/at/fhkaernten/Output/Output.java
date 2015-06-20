@@ -45,12 +45,6 @@ public class Output extends Verticle {
                 addToResult(message.body());
                 log.info(result);
                 log.info("jobDone:" + uuid);
-                /**try{
-                    PrintWriter out = new PrintWriter("src/main/result/filename.txt");
-                    out.print(result.toString());
-                } catch (Exception e){
-                    log.error("File not successful created");
-                }**/
             }
         });
     }
