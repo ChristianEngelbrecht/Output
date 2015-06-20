@@ -43,6 +43,7 @@ public class Output extends Verticle {
                 message.body().removeField("#SOURCE#");
                 message.body().removeField("#TIME#");
                 addToResult(message.body());
+
                 log.info(result);
                 log.info("jobDone:" + uuid);
             }
