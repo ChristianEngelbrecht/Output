@@ -36,7 +36,7 @@ public class Output extends Verticle {
             public void handle(Message<JsonObject> message) {
                 log.info("finish");
                 uuid = message.body().getString("#ID#");
-                log.trace("receiveResult:" + uuid);
+                log.info("receiveResult:" + uuid);
                 source = message.body().getString("#SOURCE#");
                 time = Long.valueOf(message.body().getString("#TIME#"));
                 message.body().removeField("#ID#");
@@ -44,7 +44,7 @@ public class Output extends Verticle {
                 message.body().removeField("#TIME#");
                 addToResult(message.body());
                 log.info(result);
-                log.trace("jobDone:" + uuid);
+                log.info("jobDone:" + uuid);
                 /**try{
                     PrintWriter out = new PrintWriter("src/main/result/filename.txt");
                     out.print(result.toString());
