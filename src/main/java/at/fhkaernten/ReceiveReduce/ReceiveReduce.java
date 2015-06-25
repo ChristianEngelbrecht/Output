@@ -11,34 +11,38 @@ import org.vertx.java.core.parsetools.RecordParser;
 import org.vertx.java.platform.Verticle;
 
 /**
- * Created by Christian on 04.04.2015.
+ * This verticle is used to receive the results from the MapReduce module (words : number of words).
  */
 public class ReceiveReduce extends Verticle {
     private Logger log;
     private EventBus bus;
+    private String uuid;
+    private JsonObject json;
+
     @Override
     public void start() {
-
         log = container.logger();
         bus = vertx.eventBus();
         NetServer server = vertx.createNetServer();
 
         server.connectHandler(new Handler<NetSocket>() {
+
             @Override
             public void handle(final NetSocket netSocket) {
                 log.info("A client has connected");
                 netSocket.dataHandler(RecordParser.newDelimited("#END#", new Handler<Buffer>() {
+
                     @Override
                     public void handle(Buffer buffer) {
-                        log.info("I received blalba");
-                        bus.send("output.address", new JsonObject(buffer.toString()));
+                        json = new JsonObject(buffer.toString());
+                        uuid = json.getString("#ID#");
+                        log.info("receiveResult:" + uuid);
+                        bus.send("output.address", json);
                         netSocket.close();
                     }
                 }));
 
             }
         }).listen(container.config().getInteger("port"));
-        // , container.config().getString("IP")
     }
-
 }

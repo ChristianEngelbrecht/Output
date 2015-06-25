@@ -10,16 +10,17 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by Christian on 04.04.2015.
- */
+ Call of class Main is done through a declaration in file resources/mod.json -> This is the entry point of the program.
+ The main class is used to deploy verticles (with included JSON configuration file -> resources/<NameOfVerticle>.json
+ **/
 public class Main extends Verticle {
+
     @Override
     public void start(){
-
         deployVerticle("at.fhkaernten.Output.Output");
         deployVerticle("at.fhkaernten.ReceiveReduce.ReceiveReduce");
-
     }
+
     private void deployVerticle(final String classname) {
         try {
             container.deployVerticle(
@@ -27,6 +28,7 @@ public class Main extends Verticle {
                     getConfigs(classname),
                     1,
                     new AsyncResultHandler<String>() {
+
                         @Override
                         public void handle(AsyncResult<String> asyncResult) {
                             container.logger().info(String.format("Verticle %s has been deployed.", classname));
